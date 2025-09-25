@@ -13,20 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SignInScreen(modifier: Modifier = Modifier) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Home Screen", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(24.dp))
+        Text("SignInScreen", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = modifier.height(24.dp))
         Button(onClick = {
             // 5. Navigate to the profile screen when the button is clicked.
             // We use the route defined in our sealed class.
