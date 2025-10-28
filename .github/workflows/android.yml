@@ -27,11 +27,8 @@ jobs:
           java-version: '17'
           architecture: x64
 
-      - name: Grant execute permission to gradlew
+      - name: Grant permissions for ./gradlew
         run: chmod +x ./gradlew
-
-      - name: Clean dependencies
-        run: ./gradlew clean androidDependencies
 
       - name: Check code formatting
         run: ./gradlew check
