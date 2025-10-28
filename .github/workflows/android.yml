@@ -50,7 +50,7 @@ jobs:
       - name: Create assets directory release
         run: mkdir -p app/src/release
 
-      - name: Decode and create JSON Release file
+      - name: Decode and create JSON Prod file
         # This step decodes the Base64 secret and writes it to your app's assets folder.
         env:
           JSON_SECRET: ${{ secrets.FIREBASE_PROD }}
