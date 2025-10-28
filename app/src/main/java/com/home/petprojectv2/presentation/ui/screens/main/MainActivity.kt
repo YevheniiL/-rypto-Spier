@@ -1,4 +1,4 @@
-package com.home.petprojectv2.presentation.ui
+package com.home.petprojectv2.presentation.ui.screens.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

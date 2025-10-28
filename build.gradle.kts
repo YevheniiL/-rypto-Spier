@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.firebase) apply false
 }
 
 val ktlint by configurations.creating

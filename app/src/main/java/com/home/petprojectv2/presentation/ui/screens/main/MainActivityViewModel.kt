@@ -1,4 +1,4 @@
-package com.home.petprojectv2.presentation.ui
+package com.home.petprojectv2.presentation.ui.screens.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

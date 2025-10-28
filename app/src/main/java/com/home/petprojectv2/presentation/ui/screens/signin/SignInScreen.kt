@@ -1,4 +1,4 @@
-package com.home.petprojectv2.presentation.ui.screens
+package com.home.petprojectv2.presentation.ui.screens.signin
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,10 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun WelcomeScreen(
-    modifier: Modifier = Modifier,
-    onNavSignIn: () -> Unit,
-) {
+fun SignInScreen(modifier: Modifier = Modifier) {
     Column(
         modifier =
             modifier
@@ -27,12 +24,12 @@ fun WelcomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Welcome Screen", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(24.dp))
+        Text("SignInScreen", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = modifier.height(24.dp))
         Button(onClick = {
             // 5. Navigate to the profile screen when the button is clicked.
             // We use the route defined in our sealed class.
-            onNavSignIn()
+            // navController.navigate(Screen.Profile.route)
         }) {
             Text("Go to Profile")
         }

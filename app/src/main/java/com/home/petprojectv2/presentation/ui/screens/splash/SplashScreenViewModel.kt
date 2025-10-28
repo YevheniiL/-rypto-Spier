@@ -1,4 +1,4 @@
-package com.home.petprojectv2.presentation.ui.screens.splashscreen
+package com.home.petprojectv2.presentation.ui.screens.splash
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

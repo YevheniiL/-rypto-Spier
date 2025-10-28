@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.firebase)
 }
 
 android {
@@ -25,13 +26,39 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
+        getByName("debug") {
+            // Defines a variable accessible in your code via BuildConfig.BASE_URL
+            buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
+
+            // Allows installing dev/debug builds alongside others
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            isDebuggable = true
+        }
+
+        // 'release' will be your 'prod' environment
+        getByName("release") {
+            buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
+
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Make sure to configure your signingConfigs for release
+        }
+
+        create("stage") {
+            // This copies settings from 'release' (like isMinifyEnabled, signingConfig)
+            initWith(getByName("release"))
+
+            buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
+
+            // Allows installing stage builds alongside others
+            applicationIdSuffix = ".stage"
+            isDebuggable = false // Staging should ideally not be debuggable
         }
     }
     compileOptions {
@@ -75,6 +102,15 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
+    // Retrofit - Networking
+    implementation(libs.retrofit.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp3.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

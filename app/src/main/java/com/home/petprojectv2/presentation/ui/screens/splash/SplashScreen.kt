@@ -1,4 +1,4 @@
-package com.home.petprojectv2.presentation.ui.screens.splashscreen
+package com.home.petprojectv2.presentation.ui.screens.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

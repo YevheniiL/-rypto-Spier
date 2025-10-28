@@ -9,9 +9,9 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.scene.rememberSceneSetupNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.home.petprojectv2.presentation.ui.screens.SignInScreen
-import com.home.petprojectv2.presentation.ui.screens.WelcomeScreen
-import com.home.petprojectv2.presentation.ui.screens.splashscreen.SplashScreen
+import com.home.petprojectv2.presentation.ui.screens.signin.SignInScreen
+import com.home.petprojectv2.presentation.ui.screens.splash.SplashScreen
+import com.home.petprojectv2.presentation.ui.screens.welcome.WelcomeScreen
 
 @Composable
 fun NavHost(modifier: Modifier = Modifier) {
