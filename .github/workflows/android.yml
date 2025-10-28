@@ -27,6 +27,36 @@ jobs:
           java-version: '17'
           architecture: x64
 
+      - name: Create assets directory debug
+        run: mkdir -p app/src/debug
+
+      - name: Decode and create JSON Dev file
+        # This step decodes the Base64 secret and writes it to your app's assets folder.
+        env:
+          JSON_SECRET: ${{ secrets.FIREBASE_DEV }}
+        run: echo $CUSTOM_JSON | base64 -d > app/src/debug/google-services.json
+        # Use the correct path for your project. If it's for google-services.json, the path is `app/google-services.json`.
+
+      - name: Create assets directory stage
+        run: mkdir -p app/src/stage
+
+      - name: Decode and create JSON Stage file
+        # This step decodes the Base64 secret and writes it to your app's assets folder.
+        env:
+          JSON_SECRET: ${{ secrets.FIREBASE_STAGE }}
+        run: echo $CUSTOM_JSON | base64 -d > app/src/stage/google-services.json
+        # Use the correct path for your project. If it's for google-services.json, the path is `app/google-services.json`.
+
+      - name: Create assets directory release
+        run: mkdir -p app/src/release
+
+      - name: Decode and create JSON Release file
+        # This step decodes the Base64 secret and writes it to your app's assets folder.
+        env:
+          JSON_SECRET: ${{ secrets.FIREBASE_PROD }}
+        run: echo $CUSTOM_JSON | base64 -d > app/src/stage/google-services.json
+        # Use the correct path for your project. If it's for google-services.json, the path is `app/google-services.json`.
+
       - name: Grant permissions for ./gradlew
         run: chmod +x ./gradlew
 
