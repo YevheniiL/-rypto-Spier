@@ -3,7 +3,7 @@
 name: CI
 
 # This workflow is triggered when push to master, develop or push any branch with tag
-on: [push, pull_request]
+on: [pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
