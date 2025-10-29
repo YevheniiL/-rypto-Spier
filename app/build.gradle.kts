@@ -82,6 +82,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
 
+        //noinspection WrongGradleMethod
         firebaseAppDistribution {
             when (firebaseBuildType) {
                 "debug" -> {

@@ -1,0 +1,51 @@
+name: Android CI
+
+# This workflow is triggered when push new tag with postfix stage
+on:
+  push:
+    tags:
+      - '*.stage'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Decode keystore and create jks file
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+
+      - name: Create keystore properties file
+        run: |
+          echo "storeFile=keystore.jks" >> keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
+          echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+
+      - name: Create assets directory stage
+        run: mkdir -p app/src/stage
+
+      - name: Decode and create JSON Stage file
+        # This step decodes the Base64 secret and writes it to your app's assets folder.
+        env:
+          JSON_SECRET: ${{ secrets.FIREBASE_DEV }}
+        run: echo $JSON_SECRET | base64 -d > app/src/stage/google-services.json
+        # Use the correct path for your project. If it's for google-services.json, the path is `app/google-services.json`.
+
+      - name: Assemble stage build
+        run: ./gradlew assembleStage
+
+      - name: Upload artifact to Firebase App Distribution
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}  # Only required if not using service credentials
+        run: |
+            ./gradlew appDistributionUploadStage
