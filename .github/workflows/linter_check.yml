@@ -27,6 +27,17 @@ jobs:
           java-version: '17'
           architecture: x64
 
+      - name: Decode keystore and create jks file
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+          
+      - name: Create keystore properties file
+        run: |
+          echo "storeFile=keystore.jks" >> keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
+          echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+
       - name: Create assets directory debug
         run: mkdir -p app/src/debug
 
