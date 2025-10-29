@@ -1,0 +1,36 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Decode keystore and create jks file
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+
+      - name: Create keystore properties file
+        run: |
+          echo "storeFile=keystore.jks" >> keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
+          echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+
+      - name: Assemble release build
+        run: ./gradlew assembleRelease

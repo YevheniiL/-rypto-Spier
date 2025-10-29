@@ -1,5 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import java.io.FileInputStream
+import java.util.Properties
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties =
+    Properties().apply {
+        load(FileInputStream(keystorePropertiesFile))
+    }
 
 plugins {
     alias(libs.plugins.android.application)
@@ -30,6 +38,16 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        create("release") {
+            // Read properties from the loaded file
+            storeFile = file(keystoreProperties.getProperty("storeFile"))
+            storePassword = keystoreProperties.getProperty("storePassword")
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword = keystoreProperties.getProperty("keyPassword")
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             // Defines a variable accessible in your code via BuildConfig.BASE_URL
@@ -43,9 +61,11 @@ android {
 
         // 'release' will be your 'prod' environment
         getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
 
-            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // Make sure to configure your signingConfigs for release
         }
