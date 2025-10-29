@@ -1,3 +1,4 @@
+import com.google.firebase.appdistribution.gradle.AppDistributionExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.io.FileInputStream
@@ -18,6 +19,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.firebase)
+    alias(libs.plugins.firebase.appdistribution)
 }
 
 android {
@@ -57,6 +59,14 @@ android {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             isDebuggable = true
+
+            firebaseAppDistribution {
+                artifactType = "APK"
+                appId = "1:377641702739:android:466a7af6b089ef79c3bda6"
+                artifactPath = "app/debug/app-debug.apk"
+                // releaseNotesFile = "/path/to/releasenotes.txt"
+                groups = "qa-team"
+            }
         }
 
         // 'release' will be your 'prod' environment
@@ -67,7 +77,14 @@ android {
             buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
 
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Make sure to configure your signingConfigs for release
+
+            firebaseAppDistribution {
+                artifactType = "APK"
+                appId = "1:567700455219:android:6235d4cd4a754b9c360846"
+                artifactPath = "courier-assistant/build/outputs/apk/fuerth/debug/courier-assistant-fuerth-debug.apk"
+                // releaseNotesFile = "/path/to/releasenotes.txt"
+                groups = "qa-team"
+            }
         }
 
         create("stage") {
@@ -81,10 +98,12 @@ android {
             isDebuggable = false // Staging should ideally not be debuggable
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     tasks.withType<KotlinJvmCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)

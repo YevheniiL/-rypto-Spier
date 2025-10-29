@@ -27,6 +27,7 @@ hilt = "2.57.2"
 ksp = "2.2.20-2.0.3"
 
 firebasePlugin = "4.4.4"
+firebaseaAppDistribution = "5.1.1"
 
 ktlint = "13.1.0"
 
@@ -79,6 +80,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 firebase = { id = "com.google.gms.google-services", version.ref = "firebasePlugin" }
+firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseaAppDistribution" }
 
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 

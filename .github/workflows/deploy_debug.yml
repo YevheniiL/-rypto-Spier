@@ -1,11 +1,10 @@
 name: Android CI
 
+# This workflow is triggered when push new tag with postfix debug
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    tags:
+      - '*.debug'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,4 +32,10 @@ jobs:
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
 
       - name: Assemble release build
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleDebug
+
+      - name: Upload artifact to Firebase App Distribution
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}  # Only required if not using service credentials
+        run: |
+            ./gradlew appDistributionUploadRelease
