@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import java.io.FileInputStream
 import java.util.Properties
 
+val firebaseBuildType: String = System.getenv("FIREBASE_BUILD_TYPE") ?: ""
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties =
     Properties().apply {
@@ -59,14 +60,16 @@ android {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             isDebuggable = true
+        }
 
-            firebaseAppDistribution {
-                artifactType = "APK"
-                appId = "1:377641702739:android:466a7af6b089ef79c3bda6"
-                artifactPath = "app/debug/app-debug.apk"
-                // releaseNotesFile = "/path/to/releasenotes.txt"
-                groups = "qa-team"
-            }
+        create("stage") {
+            // This copies settings from 'release' (like isMinifyEnabled, signingConfig)
+            initWith(getByName("release"))
+            buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
+
+            // Allows installing stage builds alongside others
+            applicationIdSuffix = ".stage"
+            isDebuggable = false // Staging should ideally not be debuggable
         }
 
         // 'release' will be your 'prod' environment
@@ -74,28 +77,35 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
+
             buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
-
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-
-            firebaseAppDistribution {
-                artifactType = "APK"
-                appId = "1:567700455219:android:6235d4cd4a754b9c360846"
-                artifactPath = "courier-assistant/build/outputs/apk/fuerth/debug/courier-assistant-fuerth-debug.apk"
-                // releaseNotesFile = "/path/to/releasenotes.txt"
-                groups = "qa-team"
-            }
         }
 
-        create("stage") {
-            // This copies settings from 'release' (like isMinifyEnabled, signingConfig)
-            initWith(getByName("release"))
-
-            buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
-
-            // Allows installing stage builds alongside others
-            applicationIdSuffix = ".stage"
-            isDebuggable = false // Staging should ideally not be debuggable
+        firebaseAppDistribution {
+            when (firebaseBuildType) {
+                "debug" -> {
+                    artifactType = "APK"
+                    appId = "1:377641702739:android:466a7af6b089ef79c3bda6"
+                    artifactPath = "app/build/outputs/apk/debug/app-debug.apk"
+                    // releaseNotesFile = "/path/to/releasenotes.txt"
+                    groups = "qa-team"
+                }
+                "stage" -> {
+                    artifactType = "APK"
+                    appId = "1:377641702739:android:04c7500cf77089c5c3bda6"
+                    artifactPath = "app/build/outputs/apk/stage/app-stage.apk"
+                    // releaseNotesFile = "/path/to/releasenotes.txt"
+                    groups = "qa-team"
+                }
+                "release" -> {
+                    artifactType = "APK"
+                    appId = "1:377641702739:android:597ea3ecbf37f35ec3bda6"
+                    artifactPath = "app/build/outputs/apk/release/app-release.apk"
+                    // releaseNotesFile = "/path/to/releasenotes.txt"
+                    groups = "qa-team"
+                }
+            }
         }
     }
 
