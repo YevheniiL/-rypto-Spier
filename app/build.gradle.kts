@@ -1,5 +1,15 @@
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import java.io.FileInputStream
+import java.util.Properties
+
+val firebaseBuildType: String = System.getenv("FIREBASE_BUILD_TYPE") ?: ""
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties =
+    Properties().apply {
+        load(FileInputStream(keystorePropertiesFile))
+    }
 
 plugins {
     alias(libs.plugins.android.application)
@@ -10,6 +20,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.firebase)
+    alias(libs.plugins.firebase.appdistribution)
 }
 
 android {
@@ -30,6 +41,16 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        create("release") {
+            // Read properties from the loaded file
+            storeFile = file(keystoreProperties.getProperty("storeFile"))
+            storePassword = keystoreProperties.getProperty("storePassword")
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword = keystoreProperties.getProperty("keyPassword")
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             // Defines a variable accessible in your code via BuildConfig.BASE_URL
@@ -41,30 +62,59 @@ android {
             isDebuggable = true
         }
 
-        // 'release' will be your 'prod' environment
-        getByName("release") {
-            buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
-
-            isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Make sure to configure your signingConfigs for release
-        }
-
         create("stage") {
             // This copies settings from 'release' (like isMinifyEnabled, signingConfig)
             initWith(getByName("release"))
-
             buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
 
             // Allows installing stage builds alongside others
             applicationIdSuffix = ".stage"
             isDebuggable = false // Staging should ideally not be debuggable
         }
+
+        // 'release' will be your 'prod' environment
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
+
+            buildConfigField("String", "USER_AUTH_URL", "\"https://identitytoolkit.googleapis.com/v1/accounts\"")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+
+        //noinspection WrongGradleMethod
+        firebaseAppDistribution {
+            when (firebaseBuildType) {
+                "debug" -> {
+                    artifactType = "APK"
+                    appId = "1:377641702739:android:466a7af6b089ef79c3bda6"
+                    artifactPath = "app/build/outputs/apk/debug/app-debug.apk"
+                    // releaseNotesFile = "/path/to/releasenotes.txt"
+                    groups = "qa-team"
+                }
+                "stage" -> {
+                    artifactType = "APK"
+                    appId = "1:377641702739:android:04c7500cf77089c5c3bda6"
+                    artifactPath = "app/build/outputs/apk/stage/app-stage.apk"
+                    // releaseNotesFile = "/path/to/releasenotes.txt"
+                    groups = "qa-team"
+                }
+                "release" -> {
+                    artifactType = "APK"
+                    appId = "1:377641702739:android:597ea3ecbf37f35ec3bda6"
+                    artifactPath = "app/build/outputs/apk/release/app-release.apk"
+                    // releaseNotesFile = "/path/to/releasenotes.txt"
+                    groups = "qa-team"
+                }
+            }
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     tasks.withType<KotlinJvmCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
