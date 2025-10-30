@@ -18,7 +18,7 @@ kotlinSerializationJson = "1.9.0"
 kotlinSerializationPlugin = "2.2.21"
 kotlinxSerializationCore = "1.9.0"
 
-nav3Core = "1.0.0-alpha10"
+nav3Core = "1.0.0-beta01"
 lifecycleViewmodelNav3 = "1.0.0-alpha04"
 material3AdaptiveNav3 = "1.0.0-alpha03"
 
